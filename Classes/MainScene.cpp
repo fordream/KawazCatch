@@ -1,7 +1,12 @@
 #include "MainScene.hpp"
 
-
 USING_NS_CC;
+
+// フルーツの画面上端からのマージン(px)
+const int FRUIT_TOP_MARGIN = 40;
+
+// フルーツの出現率
+const int FRUIT_SPAWN_RATE = 20;
 
 MainScene::MainScene() : _player(NULL){
     
@@ -72,6 +77,78 @@ bool MainScene::init(){
     
     director->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
     
+    //updateを毎フレーム実行するように登録する
+    this->scheduleUpdate();
     
     return true;
+}
+
+
+Sprite* MainScene::addFruit(){
+    //画面サイズを取り出す
+    auto winSize = Director::getInstance()->getWinSize();
+    //フルーツの種類を選択する
+    int fruitType = rand() % static_cast<int>(FruitType::COUNT);
+    //フルーツを作成する
+    std::string filename = StringUtils::format("fruit%d.png", fruitType);
+    auto fruit = Sprite::create(filename);
+    //フルーツの種類をタグとして指定する
+    fruit->setTag(fruitType);
+    
+    //フルーツのサイズを取り出す
+    auto fruitSize = fruit->getContentSize();
+    //x軸のランダムな位置
+    float fruitXPos = rand() % static_cast<int>(winSize.width);
+    fruit->setPosition(Vec2(fruitXPos,winSize.height - FRUIT_TOP_MARGIN - fruitSize.height / 2.0));
+    this->addChild(fruit);
+    //_fruitsベクターにフルーツを追加する
+    _fruits.pushBack(fruit);
+    
+    /* ここまで出現 */
+    
+    
+    /* フルーツに動きをつける*/
+    //地面の座標
+    auto ground = Vec2(fruitXPos, 0);
+    
+    // 3秒かけてgroundの位置まで落下させるアクション
+    auto fall = EaseSineIn::create(MoveTo::create(3, ground));
+    
+    //removeFruitを即座に呼び出すアクション
+    auto remove = CallFuncN::create([this](Node *node){
+       //NodeをSpriteにダウンキャストする
+        auto sprite = dynamic_cast<Sprite *>(node);
+        
+        //removeFruitを呼び出す
+        this->removeFruit(sprite);
+    });
+    
+    //fallとremoveを連続して実行させる
+    auto sequence = Sequence::create(fall, remove, NULL);
+    fruit->runAction(sequence);
+    
+    return fruit;
+}
+
+
+bool MainScene::removeFruit(cocos2d::Sprite *fruit){
+    //_fruitsにfruitが含まれているか確認する
+    if(_fruits.contains(fruit)){
+        //親ノードから削除する
+        fruit->removeFromParent();
+        //_fruits配列から削除する
+        _fruits.eraseObject(fruit);
+        return true;
+    }
+    return false;
+}
+
+
+void MainScene::update(float dt){
+    //毎フレーム実行される
+    int random = rand() % FRUIT_SPAWN_RATE;
+    //適当な乱数が0の時
+    if(random == 0){
+        this->addFruit();
+    }
 }
