@@ -48,8 +48,14 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
+    
+    // 全ての端末で画面サイズを320 * 480として扱う
+    glview->setDesignResolutionSize(320, 480, ResolutionPolicy::SHOW_ALL);
+    
+    FileUtils::getInstance()->addSearchPath("images");
 
     // Set the design resolution
+    /*
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
     Size frameSize = glview->getFrameSize();
     // if the frame's height is larger than the height of medium size.
@@ -69,7 +75,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     }
 
     register_all_packages();
-
+     */
     // create a scene. it's an autorelease object
     auto scene = MainScene::createScene();
 
