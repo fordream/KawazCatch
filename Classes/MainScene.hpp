@@ -15,6 +15,10 @@ public:
     static cocos2d::Scene* createScene();
     CREATE_FUNC(MainScene);
     
+    //_player変数と、getPlauyer()、setPlayer(Script *)が自動的に実装される
+    CC_SYNTHESIZE_RETAIN(cocos2d::Sprite *, _player, Player);
+    
+    
 };
 
 
