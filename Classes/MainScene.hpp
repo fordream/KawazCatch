@@ -44,6 +44,11 @@ private:
      */
     bool removeFruit(cocos2d::Sprite * fruit);
     
+    /** フルーツを取得する
+     * @param Sprite* 取得するフルーツ
+     */
+    void catchFruit(cocos2d::Sprite * fruit);
+    
     
     
 };

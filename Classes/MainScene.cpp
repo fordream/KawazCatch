@@ -131,6 +131,12 @@ Sprite* MainScene::addFruit(){
 }
 
 
+void MainScene::catchFruit(cocos2d::Sprite *fruit){
+    //フルーツを削除する
+    this->removeFruit(fruit);
+}
+
+
 bool MainScene::removeFruit(cocos2d::Sprite *fruit){
     //_fruitsにfruitが含まれているか確認する
     if(_fruits.contains(fruit)){
@@ -150,5 +156,15 @@ void MainScene::update(float dt){
     //適当な乱数が0の時
     if(random == 0){
         this->addFruit();
+    }
+    
+    for(auto& fruit : _fruits){
+        Vec2 busketPosition = _player->getPosition() - Vec2(0, 10);
+        //フルーツの短形を取り出す
+        Rect boundingBox = fruit->getBoundingBox();
+        bool isHit = boundingBox.containsPoint(busketPosition);
+        if(isHit){
+            this->catchFruit(fruit);
+        }
     }
 }
