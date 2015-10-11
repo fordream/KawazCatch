@@ -8,13 +8,14 @@ const int FRUIT_TOP_MARGIN = 40;
 // フルーツの出現率
 const int FRUIT_SPAWN_RATE = 20;
 
-MainScene::MainScene() : _player(NULL){
+MainScene::MainScene() : _score(0), _player(NULL), _scoreLabel(NULL){
     
 }
 
 MainScene::~MainScene(){
     //デストラクタ
     CC_SAFE_RELEASE_NULL(_player);
+    CC_SAFE_RELEASE_NULL(_scoreLabel);
 }
 
 Scene* MainScene::createScene(){
@@ -80,6 +81,13 @@ bool MainScene::init(){
     //updateを毎フレーム実行するように登録する
     this->scheduleUpdate();
     
+    
+    //スコアラベルの追加
+    auto scoreLabel = Label::createWithSystemFont(StringUtils::toString(_score), "Marker Felt", 16);
+    scoreLabel->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 40));
+    this->setScoreLabel(scoreLabel);
+    this->addChild(_scoreLabel);
+    
     return true;
 }
 
@@ -134,6 +142,11 @@ Sprite* MainScene::addFruit(){
 void MainScene::catchFruit(cocos2d::Sprite *fruit){
     //フルーツを削除する
     this->removeFruit(fruit);
+    //スコアを1点追加する
+    _score += 1;
+    //スコア用のラベルの表示を更新
+    _scoreLabel->setString(StringUtils::toString(_score));
+    
 }
 
 
