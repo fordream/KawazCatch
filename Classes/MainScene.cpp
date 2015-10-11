@@ -85,8 +85,16 @@ bool MainScene::init(){
     //スコアラベルの追加
     auto scoreLabel = Label::createWithSystemFont(StringUtils::toString(_score), "Marker Felt", 16);
     scoreLabel->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 40));
+    scoreLabel->enableShadow(Color4B::BLACK,Size(0.5,0.5), 3);
+    scoreLabel->enableOutline(Color4B::BLACK, 1.5);
     this->setScoreLabel(scoreLabel);
     this->addChild(_scoreLabel);
+    
+    //スコアヘッダーの追加
+    auto acoreLabelHeader = Label::createWithSystemFont("SCORE", "Marker Felt", 16);
+    acoreLabelHeader->enableShadow(Color4B::BLACK, Size(0.5, 0.5), 3);
+    acoreLabelHeader->setPosition(Vec2(size.width / 2.0 * 1.5, size.height - 20));
+    addChild(acoreLabelHeader);
     
     return true;
 }
